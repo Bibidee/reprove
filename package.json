@@ -1,7 +1,19 @@
 {
-  "name": "reprove-vercel-root",
+  "name": "reprove",
   "private": true,
-  "dependencies": {
+  "type": "module",
+  "scripts": {
+    "dev": "cd web && npm run dev",
+    "build": "cd web && npm run build",
+    "typecheck": "cd web && npm run typecheck",
+    "deploy": "genlayer deploy",
+    "test:unit": "pytest -q tests/unit",
+    "test:direct": "pytest -q tests/direct",
+    "guard": "python3 scripts/release_check.py"
+  },
+  "devDependencies": {
+    "genlayer-js": "^1.1.8",
+    "typescript": "^5.9.3",
     "next": "^16.0.0"
   }
 }
