@@ -221,13 +221,13 @@ if(!study)return <div className="shell">
 <div className="outcome-law">
 <div className="section-number">RESEARCHER SETTLEMENT</div>
 <h2>{rewardGen(claimable)} GEN claimable</h2>
-<p>Finalized valid outcomes reserve the frozen reward for the recorded researcher. Withdrawals are pull-based and require the researcher wallet.</p>{Number(claimable)>0&&<>
+<p>Finalized valid outcomes reserve the frozen reward for the recorded researcher. Withdrawals are pull-based and require the researcher wallet.</p><>
 <div className="field-block">
 <label>withdraw GEN</label>
 <input type="number" min="0" step="0.0001" value={withdrawAmount} onChange={e=>setWithdrawAmount(e.target.value)} placeholder={rewardGen(claimable)}/>
 </div>
 <button className="outline-action" onClick={doWithdraw}>withdraw reward</button>
-</>}{withdrawTx&&<>
+</>{withdrawTx&&<>
 <Tx state={withdrawTx}/>
 <div className="finality-actions">
 <button className="outline-action" onClick={checkWithdraw}>check withdrawal finality</button>{withdrawTx.phase==="READY_TO_FINALIZE"&&<button className="ink-action" onClick={async()=>{if(w.address&&withdrawTx.txId){await finalizeResearchTx(w.address,withdrawTx.txId);
