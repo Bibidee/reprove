@@ -10,7 +10,7 @@ This report records the current repository checks and the completed live smoke-t
 - ABI schema extraction passed for all three contracts: Registry 7 methods, Engine 8, Pool 9.
 - Release check: scripts/release_check.py — RELEASE CHECK OK.
 - The production frontend is served at https://the-reprove.vercel.app.
-- The latest correct Vercel production deployment is reprove-2fokk0lnv-bibidees-projects.vercel.app, reported READY.
+- The latest correct Vercel production deployment is reprove-9ijybjbm4-bibidees-projects.vercel.app, reported READY for commit a704975.
 
 The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. On clean checkout commit b41a2ed, npm install, npm run typecheck, and npm run build all passed; the build emitted the expected five public routes.
 

@@ -79,7 +79,7 @@ The deployment script writes canonical addresses and transaction IDs to `deploym
 ## Production frontend
 
 The verified production frontend is deployed at [the-reprove.vercel.app](https://the-reprove.vercel.app).
-The current production alias points to `reprove-2fokk0lnv-bibidees-projects.vercel.app` (READY, 2026-09-24).
+The current production deployment is `reprove-9ijybjbm4-bibidees-projects.vercel.app` (READY, 2026-09-24), with the public alias at the-reprove.vercel.app.
 The live smoke-test receipts and frontend behavior are recorded in `VALIDATION_REPORT.md`. The latest local contract hardening changes must be redeployed after their final commit; no production claim is made for code that has not reached Vercel.
 
 ## Demo evidence
