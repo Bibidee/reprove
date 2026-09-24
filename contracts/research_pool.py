@@ -26,7 +26,7 @@ class ResearchPool(gl.Contract):
     study_balances: TreeMap[str, u256]
     rewarded_count: TreeMap[str, u256]
     claimable: TreeMap[str, u256]
-    final_records: TreeMap[str, str]
+    final_records: str
     record_keys_json: str
     record_count: u256
 
@@ -39,10 +39,14 @@ class ResearchPool(gl.Contract):
             raise gl.vm.UserError("invalid engine address")
         self.registry_address = registry_text.lower()
         self.engine_address = engine_text.lower()
+        # GenVM derives the concrete storage descriptor from the annotated
+        # fields.  Constructing parameterized TreeMaps here creates a second
+        # descriptor instance and fails deployment-time descriptor identity
+        # checks, so use the SDK's canonical unparameterized constructor.
         self.study_balances = TreeMap()
         self.rewarded_count = TreeMap()
         self.claimable = TreeMap()
-        self.final_records = TreeMap()
+        self.final_records = "{}"
         self.record_keys_json = "[]"
         self.record_count = u256(0)
 
@@ -89,7 +93,7 @@ class ResearchPool(gl.Contract):
             if attempt.get("state") != "ASSESSED":
                 raise gl.vm.UserError("unsettled replication attempt exists")
             record_key = study_key + ":" + str(attempt.get("attempt_key", ""))
-            if not self.final_records.get(record_key):
+            if record_key not in json.loads(self.final_records):
                 raise gl.vm.UserError("assessed attempt is not finalized into the pool")
 
         balance = int(self.study_balances.get(study_key) or u256(0))
@@ -110,7 +114,8 @@ class ResearchPool(gl.Contract):
         if self._sender() != self.engine_address:
             raise gl.vm.UserError("only replication engine may register outcomes")
         record_key = study_key + ":" + attempt_key
-        if record_key in self.final_records:
+        records = json.loads(self.final_records)
+        if record_key in records:
             raise gl.vm.UserError("final record already registered")
         if verdict not in ["REPLICATED", "FAILED_TO_REPLICATE", "PROTOCOL_DEVIATION", "INCONCLUSIVE"]:
             raise gl.vm.UserError("invalid verdict")
@@ -141,7 +146,8 @@ class ResearchPool(gl.Contract):
             "recorded_at": self._now(),
             "reward_reserved_wei": reserved,
         }
-        self.final_records[record_key] = json.dumps(record, sort_keys=True, separators=(",", ":"))
+        records[record_key] = record
+        self.final_records = json.dumps(records, sort_keys=True, separators=(",", ":"))
         keys = json.loads(self.record_keys_json)
         keys.append(record_key)
         self.record_keys_json = json.dumps(keys, separators=(",", ":"))
@@ -173,8 +179,7 @@ class ResearchPool(gl.Contract):
 
     @gl.public.view
     def get_final_record(self, record_key: str) -> dict:
-        raw = self.final_records.get(record_key)
-        return json.loads(raw) if raw else {}
+        return json.loads(self.final_records).get(record_key, {})
 
     @gl.public.view
     def list_final_records(self, offset: int, limit: int) -> dict:
@@ -186,7 +191,8 @@ class ResearchPool(gl.Contract):
             limit = 50
         keys = json.loads(self.record_keys_json)
         selected = keys[offset : offset + limit]
-        return {"items": [json.loads(self.final_records[k]) for k in selected], "total": len(keys)}
+        records = json.loads(self.final_records)
+        return {"items": [records[k] for k in selected], "total": len(keys)}
 
     @gl.public.view
     def get_config(self) -> dict:

@@ -174,7 +174,7 @@ class ReplicationEngine(gl.Contract):
         return hashlib.sha256(value.encode("utf-8")).hexdigest()
 
     @gl.public.write
-    def set_pool_once(self, pool_address: str) -> None:
+    def set_pool_once(self, pool_address: Address) -> None:
         if self._sender() != self.owner_address:
             raise gl.vm.UserError("only owner may set pool")
         if self.pool_address:
