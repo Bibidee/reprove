@@ -1,0 +1,7 @@
+.pytest_cache
+artifacts
+__pycache__
+*.pyc
+.git
+node_modules
+web/.next
