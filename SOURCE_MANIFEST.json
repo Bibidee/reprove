@@ -1,0 +1,40 @@
+{
+  "project": "REPROVE",
+  "networkTarget": {
+    "name": "GenLayer Studionet",
+    "chainId": 61999
+  },
+  "frontendRoutes": [
+    "/",
+    "/lab",
+    "/claim/[studyKey]",
+    "/attempt/[attemptKey]",
+    "/archive/[recordKey]"
+  ],
+  "contracts": [
+    "contracts/study_registry.py",
+    "contracts/replication_engine.py",
+    "contracts/research_pool.py"
+  ],
+  "sdkTargets": {
+    "genlayer-js": "1.1.8",
+    "genlayer-py": "v0.18",
+    "genlayer-test": "v0.29"
+  },
+  "deploymentStatus": "handoff-ready; recipient must deploy with funded wallet",
+  "frontendIdentity": {
+    "metaphor": "research journal / replication atlas / protocol paper / notebook / archive",
+    "palette": [
+      "#edf5fb",
+      "#f8fbfe",
+      "#11243e",
+      "#2457d6",
+      "#6e47d8",
+      "#c13d87",
+      "#177f9b"
+    ],
+    "cleanRoomGuard": "scripts/release_check.py"
+  },
+  "finalityModel": "parent evaluation must finalize before ResearchPool child is created; live release proof must separately verify deterministic child FINALIZED",
+  "evidenceCommitment": "validator-matched bounded evidence-window receipts + aggregate SHA-256 snapshot digest"
+}

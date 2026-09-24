@@ -1,0 +1,5 @@
+metric,registered_requirement,observed
+latency_reduction,>=12%,13.3%
+candidate_error_increase,0,0
+sample_documents,1000,1000
+measured_passes,10,10

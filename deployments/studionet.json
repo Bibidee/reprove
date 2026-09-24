@@ -1,0 +1,18 @@
+{
+  "project": "REPROVE",
+  "network": "GenLayer Studionet",
+  "chainId": 61999,
+  "rpc": "https://studio.genlayer.com/api",
+  "explorer": "https://explorer-studio.genlayer.com",
+  "deployedAt": "2026-09-24T00:31:35Z",
+  "frontend": {
+    "productionUrl": "https://the-reprove.vercel.app",
+    "vercelDeploymentId": "dpl_9XyDYNGUuGY1zN9WA8LsBKowCyEV",
+    "status": "READY"
+  },
+  "contracts": {
+    "studyRegistry": {"address": "0xaeDa3bd10282e7677c9409423b7142Fd4152d2db", "deployTx": "0x12b85efdcc025512dede402bdb3329446927bfae97559c30f2a6e6604a3820fa"},
+    "replicationEngine": {"address": "0x3Ac598f3620971dc672787E2c60BF4e39534FEbd", "deployTx": "0x34a1eb958fed8003f3f4711a0326efaa0bbace52e0150abaf3d808d39811f6bd", "configurePoolTx": ""},
+    "researchPool": {"address": "0xBcD831E176a1392E3f4EfF5dc2cBC8B575E3Fe71", "deployTx": "0x79054393980de761898751dface5a15421b3fbdece289d985fa3793f14bb7b03"}
+  }
+}

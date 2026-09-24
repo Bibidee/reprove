@@ -1,0 +1,3 @@
+"use client";
+import {useResearcher} from "./researcher-session";
+export function ResearcherStamp(){const w=useResearcher();if(!w.address)return <button className="identity-stamp" onClick={()=>w.connect()} disabled={w.busy}>{w.busy?"connecting…":"connect identity"}</button>;return <button className={`identity-stamp ${w.chainOk?"ok":"warn"}`} onClick={()=>!w.chainOk&&w.switchNetwork()}>{w.chainOk?"researcher":"wrong network"} · {w.address.slice(0,6)}…{w.address.slice(-4)}</button>}

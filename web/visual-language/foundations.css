@@ -1,0 +1,17 @@
+:root{
+  --glacier:#edf5fb;
+  --sheet:#f8fbfe;
+  --ink:#11243e;
+  --ink-soft:#41566f;
+  --line:#bfd0df;
+  --line-strong:#8eabc1;
+  --cobalt:#2457d6;
+  --violet:#6e47d8;
+  --magenta:#c13d87;
+  --cyan:#177f9b;
+  --ice:#dcebf5;
+  --warning:#7b4bac;
+  --danger:#a52f6d;
+  --sans:"Helvetica Neue",Arial,system-ui,sans-serif;
+  --mono:"SFMono-Regular",Consolas,"Liberation Mono",monospace;
+}

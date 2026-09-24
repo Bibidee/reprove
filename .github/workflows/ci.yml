@@ -1,0 +1,41 @@
+name: reprove-ci
+on:
+  push:
+  pull_request:
+jobs:
+  verify:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+      - name: Python tooling
+        run: |
+          python -m pip install --upgrade pip
+          pip install -r requirements.txt
+      - name: Contract syntax and deterministic unit tests
+        run: |
+          python -m py_compile contracts/*.py
+          pytest -q tests/unit
+      - name: GenVM lint
+        run: |
+          genvm-lint check contracts/study_registry.py
+          genvm-lint check contracts/replication_engine.py
+          genvm-lint check contracts/research_pool.py
+      - name: Direct Mode
+        run: pytest -q tests/direct
+      - name: Clean-room and release guard
+        run: python scripts/release_check.py
+      - name: Frontend install
+        working-directory: web
+        run: npm install --no-audit --no-fund
+      - name: Frontend typecheck
+        working-directory: web
+        run: npm run typecheck
+      - name: Frontend production build
+        working-directory: web
+        run: npm run build

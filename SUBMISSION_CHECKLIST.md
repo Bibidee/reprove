@@ -1,0 +1,31 @@
+# Submission checklist
+
+- [ ] All three contracts pass current GenVM lint.
+- [ ] Direct Mode tests pass under the exact installed toolchain.
+- [ ] Unit tests pass.
+- [ ] Frontend typecheck and production build pass.
+- [ ] `scripts/release_check.py` passes.
+- [ ] Canonical network is Studionet 61999, not 61997.
+- [ ] All deployment transactions are FINALIZED.
+- [ ] `deployments/studionet.json` contains real canonical addresses and tx IDs.
+- [ ] Engine config points to the canonical Registry and Pool.
+- [ ] Pool config points to the canonical Registry and Engine.
+- [ ] Browser uses injected EIP-1193 wallet and handles wrong network.
+- [ ] `/`, `/lab`, `/claim/[studyKey]`, `/attempt/[attemptKey]`, `/archive/[recordKey]` work on production.
+- [ ] No copied `ometere123` frontend code or route structure exists.
+- [ ] No PATHCLOCK UI/palette/routes were reused.
+- [ ] At least one live study is created from the production frontend.
+- [ ] At least one attempt is created by a second wallet where possible.
+- [ ] Evidence URLs are public HTTPS and use more than one origin for the demo.
+- [ ] Evidence snapshot receipts and aggregate digest are visible/inspectable for the finalized demo attempt.
+- [ ] If the demo study freezes allowed/required origins, the submitted manifest satisfies them exactly and an unlisted-origin negative test is captured.
+- [ ] Evaluation visibly passes through provisional consensus before finalization.
+- [ ] ACCEPTED is never labelled final/success.
+- [ ] UNDETERMINED has a safe non-decision UI.
+- [ ] The ResearchPool child transaction appears only after parent evaluation finalization, and the child itself is verified FINALIZED before the archive/reward is presented as fully settled.
+- [ ] REPLICATED and FAILED_TO_REPLICATE receive the same fixed reward policy.
+- [ ] PROTOCOL_DEVIATION and INCONCLUSIVE do not auto-reward.
+- [ ] Pull withdrawal is tested with accounting checked before/after.
+- [ ] Explorer links and tx hashes are captured for the submission.
+- [ ] README and deployment manifest match the final source commit.
+- [ ] No demo/mock mode is presented as the live contract path.
