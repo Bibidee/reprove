@@ -72,15 +72,24 @@ npm run dev
 
 ## Deployment
 
-The repository intentionally contains **no private key**. `deployments/studionet.json` remains the last verified canonical Studionet deployment; a fresh source-parity deployment of all three contracts is still a release gate and must not be represented by unverified addresses. See `DEPLOYMENT_RUNBOOK.md` and `MEGA_PROMPT_FOR_AGENT.md`.
+The repository intentionally contains **no private key**. The current verified
+Studionet deployment, including finalized deployment/configuration receipts,
+source hashes, schemas, and Engine → ResearchPool binding, is recorded in
+`deployments/studionet.json`. See `DEPLOYMENT_RUNBOOK.md` and
+`MEGA_PROMPT_FOR_AGENT.md`.
 
-The deployment script writes canonical addresses and transaction IDs to `deployments/studionet.json` after all three contracts and the engine-to-pool configuration transaction finalize.
+The deployment script writes canonical addresses and transaction IDs to
+`deployments/studionet.json` after all three contracts and the engine-to-pool
+configuration transaction finalize.
 
 ## Production frontend
 
 The verified production frontend is deployed at [the-reprove.vercel.app](https://the-reprove.vercel.app).
-The current production deployment is `reprove-9ijybjbm4-bibidees-projects.vercel.app` (READY, 2026-09-24), with the public alias at the-reprove.vercel.app.
-The live smoke-test receipts and frontend behavior are recorded in `VALIDATION_REPORT.md`. The latest local contract hardening changes must be redeployed after their final commit; no production claim is made for code that has not reached Vercel.
+The current production deployment is `reprove-ax0k88w4j-bibidees-projects.vercel.app`
+(READY, 2026-09-24), with the public alias at the-reprove.vercel.app.
+The live smoke-test receipts and frontend behavior are recorded in
+`VALIDATION_REPORT.md`, including the finalized close-study receipt and the
+zero-balance reclaim decision.
 
 ## Demo evidence
 

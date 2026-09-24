@@ -4,15 +4,62 @@
   "chainId": 61999,
   "rpc": "https://studio.genlayer.com/api",
   "explorer": "https://explorer-studio.genlayer.com",
-  "deployedAt": "2026-09-24T00:31:35Z",
+  "deployedAt": "2026-09-24T19:52:01.583Z",
   "frontend": {
     "productionUrl": "https://the-reprove.vercel.app",
-    "vercelDeploymentUrl": "https://reprove-9ijybjbm4-bibidees-projects.vercel.app",
+    "vercelDeploymentUrl": "https://reprove-ax0k88w4j-bibidees-projects.vercel.app",
+    "deploymentId": "dpl_3SiB9BNAzcpUTmdK5y8nTjWZ5MYg",
     "status": "READY"
   },
   "contracts": {
-    "studyRegistry": {"address": "0xaeDa3bd10282e7677c9409423b7142Fd4152d2db", "deployTx": "0x12b85efdcc025512dede402bdb3329446927bfae97559c30f2a6e6604a3820fa"},
-    "replicationEngine": {"address": "0x77815770C9D530f0A954EA76122e09C2dD1eE8D2", "deployTx": "0xdff8c21d3036754577167a07994ca54de2adc4a5f5195870921763539e8558fa", "configurePoolTx": "0x717037f428fed63cb3e14539426d77e6b46fd7be8c1b12cdcae8b6128c63616e", "poolBindingVerified": true},
-    "researchPool": {"address": "0x49104186Aed85b14Af0C7075a5cc1c9731Bec35d", "deployTx": "0x0b250ca65efbf2591ba87c42dbd23e125ac00ff8edddd923df64372393dc27f8"}
+    "studyRegistry": {
+      "address": "0x6Fe056F1290FD27EB3AeE661EA76A60DF3998eEd",
+      "deployTx": "0x60f35630c9f4f4bc95726cc3db3d5cf55fb355f357e978dcbbf00ef6526cfa17",
+      "sourceSha256": "376df9b1397b399f877a3a53f17032d64775245f0aed9fc515ade52db6952be6",
+      "schemaSha256": "e9e6a2a5356a1d208bc94f33ad615e7cf56962810ae230db2987ad5e5eaf3bae",
+      "schemaMethods": 7,
+      "sourceParityVerified": true
+    },
+    "replicationEngine": {
+      "address": "0xFD4e817F44AC9c5A71D5c873d5f99c4F6bf8DA6b",
+      "deployTx": "0x68c63053730906ed9e97905b89fa2c9f45dba17d77ba6a7db9029770867015b7",
+      "configurePoolTx": "0xcd1ff33f77b7b4898195285a371cf1992df56d28d1f2084da4699efab969671e",
+      "sourceSha256": "91475828f5a073843483e361f28cf223e950fe431f2a11a893818f19fa202065",
+      "schemaSha256": "442b777cb54d6bd5eb7edfa53674e26b8c0b9d53cef1bc13d383ea68e0a564d6",
+      "schemaMethods": 8,
+      "sourceParityVerified": true,
+      "poolBindingVerified": true
+    },
+    "researchPool": {
+      "address": "0xE8516139d8e6A70de9DEC8FA67535409df250f81",
+      "deployTx": "0x1a54e6f19ad232143e08002892fcfb0703e8d62710e1ae90a8f0f06d3d35f726",
+      "sourceSha256": "96da710eac87cd3063b5fe88e07336bef2fdb2db2836ecb4d0599f46a9e2356d",
+      "schemaSha256": "a87559c491c03493ef320b918db67ae88e8b51709b8bf94c8c1cd9f509bf4f4b",
+      "schemaMethods": 9,
+      "sourceParityVerified": true
+    }
+  },
+  "smokeLifecycle": {
+    "studyKey": "final-smoke-2026f",
+    "attemptKey": "final-smoke-attempt-01",
+    "creator": "0xFf203Bb65942F50CB81A8AF98c5F5bd9d8a79b54",
+    "researcher": "0x4A7D76b8C4668a3426d6d54eC24b41Fa87b532f5",
+    "registrationTx": "0x5499c2606d1db42c832af5c1f9f989e2e5175e86215cafaf6037657adc6423cf",
+    "fundingTx": "0x4da5f506b69ddd6633eaa8458eb831c18e427f59aa4cf67d57ddddac43eb3a8d",
+    "beginAttemptTx": "0x447de1935669e76a940531e08e18d33c1919b9cbd231657f65f51ff7fa88ec8e",
+    "evaluationTx": "0x4cf96721c5f8b057be228f43b99e2be5ec1073df9d74cb4f5040e961ceb795d4",
+    "researchPoolChildTx": "0x4e7b8e16a22c81d446bce40b02fa097c99c07986efb5e0d1f5981ef44a7d3fe6",
+    "withdrawalTx": "0x5e58afe98e570e7df3afa8424d23992e6204af3ac2a2ccaad49c676371744c3b",
+    "closeTx": "0x173532a9338f44e2cf164f39a1b5629227bfe20efc270af6a2df3aae9637da07",
+    "evidenceSnapshotDigest": "79a2bfea2974b20f17039cfccc8038da0b86ac098741fb251a490255a3ccd8fa",
+    "assessmentDigest": "b52d4b4362da33b9bb03d063353cd54a1f9dc66c56980b56deef9c04f53a4442",
+    "canonicalReadback": {
+      "studyStatus": "CLOSED",
+      "attemptState": "ASSESSED",
+      "availableWei": 0,
+      "rewardedAttempts": 1,
+      "researcherClaimableWei": 0,
+      "reclaimSubmitted": false
+    }
   }
 }

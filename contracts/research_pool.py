@@ -26,6 +26,8 @@ class ResearchPool(gl.Contract):
     study_balances: TreeMap[str, u256]
     rewarded_count: TreeMap[str, u256]
     claimable: TreeMap[str, u256]
+    claimable_json: str
+    withdrawn_json: str
     final_records: str
     record_keys_json: str
     record_count: u256
@@ -46,6 +48,8 @@ class ResearchPool(gl.Contract):
         self.study_balances = TreeMap()
         self.rewarded_count = TreeMap()
         self.claimable = TreeMap()
+        self.claimable_json = "{}"
+        self.withdrawn_json = "{}"
         self.final_records = "{}"
         self.record_keys_json = "[]"
         self.record_count = u256(0)
@@ -62,6 +66,12 @@ class ResearchPool(gl.Contract):
         if not value:
             raise gl.vm.UserError("study not found")
         return value
+
+    def _computed_claimable(self, wallet: str) -> int:
+        claimables = json.loads(self.claimable_json)
+        reserved = int(claimables.get(wallet, 0))
+        withdrawn = int(json.loads(self.withdrawn_json).get(wallet, 0))
+        return max(reserved - withdrawn, 0)
 
     @gl.public.write.payable
     def fund_study(self, study_key: str) -> int:
@@ -134,6 +144,9 @@ class ResearchPool(gl.Contract):
             wallet = researcher.lower()
             current_claimable = int(self.claimable.get(wallet) or u256(0))
             self.claimable[wallet] = u256(current_claimable + reward)
+            claimables = json.loads(self.claimable_json)
+            claimables[wallet] = int(claimables.get(wallet, 0)) + reward
+            self.claimable_json = json.dumps(claimables, sort_keys=True, separators=(",", ":"))
             reserved = reward
 
         record = {
@@ -160,10 +173,13 @@ class ResearchPool(gl.Contract):
         if value <= 0:
             raise gl.vm.UserError("withdraw amount must be positive")
         sender = self._sender()
-        available = int(self.claimable.get(sender) or u256(0))
+        available = self._computed_claimable(sender)
         if value > available:
             raise gl.vm.UserError("withdraw amount exceeds claimable balance")
         self.claimable[sender] = u256(available - value)
+        withdrawn = json.loads(self.withdrawn_json)
+        withdrawn[sender] = int(withdrawn.get(sender, 0)) + value
+        self.withdrawn_json = json.dumps(withdrawn, sort_keys=True, separators=(",", ":"))
         _Recipient(gl.message.sender_address).emit_transfer(value=u256(value))
 
     @gl.public.view
@@ -175,7 +191,7 @@ class ResearchPool(gl.Contract):
 
     @gl.public.view
     def get_claimable(self, researcher: str) -> int:
-        return int(self.claimable.get(researcher.lower()) or u256(0))
+        return self._computed_claimable(researcher.lower())
 
     @gl.public.view
     def get_final_record(self, record_key: str) -> dict:

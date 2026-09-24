@@ -38,7 +38,7 @@ export async function writeResearchTx(opts:{account:string,address:string,functi
   onState?.({phase:"CONSENSUS_RUNNING",txId,message:"Validators are evaluating this transaction."});
   const decided=await client.waitForTransactionReceipt({hash:txId,waitUntil:"decided",retries:180,interval:4000,fullTransaction:true});
   const tx=await client.getTransaction({hash:txId});
-  const name=statusNameOf((tx as any)?.statusName,(tx as any)?.status,(decided as any)?.statusName,(decided as any)?.status);
+  const name=statusNameOf((tx as any)?.statusName,(tx as any)?.status_name,(tx as any)?.status,(decided as any)?.statusName,(decided as any)?.status_name,(decided as any)?.status);
   if(name.includes("FINALIZED")){
     const state={phase:"FINALIZED" as const,txId,statusName:name,message:"Transaction is finalized. Contract state has crossed the finality boundary.",receipt:decided};
     onState?.(state); return state;
@@ -63,7 +63,7 @@ export async function writeResearchTx(opts:{account:string,address:string,functi
 export async function inspectTransaction(account:string|undefined,txId:string):Promise<ResearchTxState>{
   const client:any=account?signer(account):reader();
   const tx:any=await client.getTransaction({hash:txId as `0x${string}`});
-  const name=statusNameOf(tx?.statusName,tx?.status);
+  const name=statusNameOf(tx?.statusName,tx?.status_name,tx?.status);
   if(name.includes("FINALIZED")) return {phase:"FINALIZED",txId,statusName:name,message:"Finalized. Permanent consequences may now be relied on.",receipt:tx};
   if(name.includes("READY_TO_FINALIZE")) return {phase:"READY_TO_FINALIZE",txId,statusName:name,message:"Appeal window has closed; transaction is ready to finalize.",receipt:tx};
   if(name.includes("UNDETERMINED")) return {phase:"UNDETERMINED",txId,statusName:name,message:"Consensus is undetermined.",receipt:tx};
