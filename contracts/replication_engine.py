@@ -45,7 +45,8 @@ class ReplicationEngine(gl.Contract):
         if not registry_text.startswith("0x") or len(registry_text) != 42:
             raise gl.vm.UserError("invalid registry address")
         self.registry_address = registry_text.lower()
-        self.pool_address = pool_text.lower()
+        normalized_pool = pool_text.lower()
+        self.pool_address = "" if normalized_pool in ("", "0x0000000000000000000000000000000000000000") else normalized_pool
         self.owner_address = gl.message.sender_address.as_hex.lower()
         self.attempts = TreeMap()
         self.study_attempts = TreeMap()
