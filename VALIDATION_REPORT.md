@@ -1,77 +1,73 @@
-# Validation report
+# REPROVE validation report
 
-This report records the checks completed against the current checkout and the live
-Studionet 61999 smoke lifecycle. It does not claim a 4/5 score: deployed-source
-parity hashes and a reward-eligible evidence run remain separate release evidence.
+This report records the current repository checks and the completed live smoke-test lifecycle on Studionet 61999. It is an evidence record, not a claim that every remaining release gate is complete.
 
-## Passed locally
+## Current local and production checks
 
-```text
-python3 -m py_compile contracts/*.py
-PASS
+- Unit tests: pytest -q tests/unit — 37 passed.
+- Direct integration tests: pytest -q tests/direct — 13 passed.
+- Release check: scripts/release_check.py — RELEASE CHECK OK.
+- The production frontend is served at https://the-reprove.vercel.app.
+- The latest correct Vercel production deployment is reprove-2fokk0lnv-bibidees-projects.vercel.app, reported READY.
 
-bundled-python -m pytest -q tests/unit
-37 passed
+The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. A fresh source-parity deployment of all three contracts, plus the final adversarial evidence matrix, remains a release gate.
 
-bundled-python -m pytest -q tests/direct
-13 passed
+## Live smoke-test lifecycle
 
-bundled-python scripts/release_check.py
-RELEASE CHECK OK
-Routes: /, /lab, /claim/[studyKey], /attempt/[attemptKey], /archive/[recordKey]
-Clean-room route/component/palette guards passed.
+Network: Studionet 61999  
+Study key: smoke-test-2026e  
+Study title: Preregistered replication smoke test
 
-genvm-lint check contracts/study_registry.py
-PASS: lint and semantic validation
+Creator: 0xFf203Bb65942F50CB81A8AF98c5F5bd9d8a79b54  
+Researcher: 0x4A7D76b8C4668a3426d6d54eC24b41Fa87b532f5
 
-genvm-lint check contracts/replication_engine.py
-PASS: lint and semantic validation
+### Registration and funding
 
-genvm-lint check contracts/research_pool.py
-PASS: lint and semantic validation
+- Registration transaction: 0xe605e15a8ad93958a37ded4c82f2537164566e85dec39e85d129cb3d181be3dd
+- Funding transaction: 0x58442aa98023e25e99b5341e24bf5655db85998004288f39ef30094d96c2822b
+- Both transactions finalized successfully.
+- The funded research pool contained 1 GEN.
 
-genvm-lint schema contracts/{study_registry,replication_engine,research_pool}.py
-PASS: schemas generated
+### Attempt matrix
 
-pnpm install --frozen-lockfile
-PASS: 245 packages installed from the pinned lockfile
+- Attempt 01: 0x7b46ee59f098b66a7881cb64224f9d939f6aad98d7cc378f3ed43b47f8bddf5b — assessed INCONCLUSIVE; no reward.
+- Attempt 02: 0xb409d251db7bba24a625b4fb6b7263f59d074f27d4c531fe855b0f713ecdb3df — parent evaluation UNDETERMINED; no record or reward.
+- Attempt 03: 0x7673dfe5ef39214e28adda331129d241800dec3643f4311fea90f9f6eaac72f1 — assessed INCONCLUSIVE; no reward.
+- Attempt 04: 0x08fa232eb54e7741991b6c4f9ef49efecef90f8cfef772bcc819ad9e2019e4a4 — complete two-origin evidence package; assessed REPLICATED.
 
-pnpm run typecheck
-PASS
+Attempt 04 evidence used dataset, method, analysis, and result-table receipts from raw GitHub and jsDelivr, with sample size 1000, effect 13.3%, and zero reported errors.
 
-pnpm run build
-PASS: Next.js 16.3.6 production build; routes generated successfully
-```
+### Evaluation and reward reservation
 
-## Live Studionet smoke lifecycle
+- Parent evaluation transaction: 0x32807397fdad7ae9f045b37ef996f2860c9fd1214bbb88a18900399ea8ca1e16
+- Result: REPLICATED
+- Evidence sufficiency: SUFFICIENT
+- Protocol: SATISFIED
+- Required evidence: YES
+- Evidence snapshot digest: 4c4d525aef58d74bc2ab708ebe3303a6a63d1d6d0a6071d48bd3dd40148f1a29
+- ResearchPool child transaction: 0x8bb14eed9995f1bdc75756b6e5683d368cd70df8f10b2d805ed4dfda9c35c211
+- Archive record: https://the-reprove.vercel.app/archive/smoke-test-2026e%3Aattempt-2026e-04
+- The archive record showed REWARD RESERVED for 1 GEN.
 
-The canonical production frontend is `https://the-reprove.vercel.app` and the
-study used for the smoke lifecycle is `reprove-live-2026-09` on chain 61999.
+### Withdrawal and close
 
-```text
-creator:   0x4a7d…32f5
-researcher: 0xff20…9b54
-study registration: 0x71691c280d2a5899d8f29516b408f664b6b48285156e79ef656c195bd0f9a2db
-pool funding (10 GEN): 0xeaa5b4c44bcff93b124f2ca05b40495a0a15e2f29177d519904535e9fd7c73c3
-attempt registration: 0x0deb5d9f9817e6e87e7fbbaf33a70429801046660c697eee346b7c65eb7a76a8
-corrected attempt registration: 0x28f997f110524beffecd7fd68dfbd254caf9229e3f980092721718cef079f3ef
-corrected evaluation: 0x103d0a54adb2001684f772bff8ae88bb593e7758a13bd9f22814d3ebbea2ade0
-close study: 0x95249586ef000343564293094dbb46ce7c8bf3d104b664ea7604f135d3a4a21b
-reclaim settled remainder: 0xaf55c110125fd927f20763158b391ee4bbbae336a028f71b607c111e790c223b
-```
+- Withdrawal transaction: 0x596679f34d5899c800de578184c802a68aa0c6c14e8fc580c2ad08fb70b85676
+- Withdrawal finalized successfully for 1 GEN.
+- Post-withdrawal reads confirmed get_claimable(researcher) = 0.
+- The study pool read confirmed available_wei = 0 and rewarded_attempts = 1.
+- Close transaction: 0xc6e521e4979488a59a4c3b34401aeedb5740a1f4d947815e413e8fad32cd73a3
+- Close finalized successfully; the canonical page now reports CLOSED.
 
-Both attempts reached finality and were archived as `INCONCLUSIVE`; the corrected
-archive evidence digest was
-`518fe7fb776c5f36599e9ba4cb137d8b92943e13e66e064061fba74ff6b771a3`.
-Because the submitted URLs were robots.txt windows rather than scientific records,
-no reward was issued and no ResearchPool reward child transaction or researcher
-withdrawal exists. After close finality, the canonical pool readback was `0 GEN`
-following the finalized reclaim above.
+No reclaim transaction was submitted: the entire 1 GEN pool had already been withdrawn, so there was no remaining settled balance. Submitting a zero-balance reclaim would have been an unnecessary failing transaction.
 
-## Requires recipient environment
+## Deployment status and remaining gates
 
-The live frontend is hosted at `https://the-reprove.vercel.app` and reads the
-verified Studionet 61999 deployment addresses from the Production environment.
-Deployed-source parity hashes and a reward-eligible lifecycle with a finalized
-ResearchPool child transaction remain required before this report can support a
-4/5 claim.
+deployments/studionet.json remains the last verified canonical deployment manifest. A fresh three-contract source-parity deployment was started, but the fresh Engine and Pool addresses did not produce verifiable deployed code and must not be treated as released addresses.
+
+Remaining release work:
+
+1. Complete and verify a fresh source-parity deployment of Registry, Engine, and ResearchPool.
+2. Re-run the clean-checkout GenVM/schema and frontend checks after that deployment.
+3. Expand the adversarial lifecycle matrix and attach its receipts.
+4. Commit and push the final evidence updates without including generated build artifacts.
+
