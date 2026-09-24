@@ -7,7 +7,7 @@
   "deployedAt": "2026-09-24T00:31:35Z",
   "frontend": {
     "productionUrl": "https://the-reprove.vercel.app",
-    "vercelDeploymentId": "dpl_9XyDYNGUuGY1zN9WA8LsBKowCyEV",
+    "vercelDeploymentUrl": "https://reprove-9ijybjbm4-bibidees-projects.vercel.app",
     "status": "READY"
   },
   "contracts": {
