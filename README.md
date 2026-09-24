@@ -72,15 +72,15 @@ npm run dev
 
 ## Deployment
 
-The repository intentionally contains **no private key and no funded deployer**. The recipient's agent must perform the live Studionet deployment and Vercel production deployment. See `DEPLOYMENT_RUNBOOK.md` and `MEGA_PROMPT_FOR_AGENT.md`.
+The repository intentionally contains **no private key**. `deployments/studionet.json` remains the last verified canonical Studionet deployment; a fresh source-parity deployment of all three contracts is still a release gate and must not be represented by unverified addresses. See `DEPLOYMENT_RUNBOOK.md` and `MEGA_PROMPT_FOR_AGENT.md`.
 
 The deployment script writes canonical addresses and transaction IDs to `deployments/studionet.json` after all three contracts and the engine-to-pool configuration transaction finalize.
 
 ## Production frontend
 
 The verified production frontend is deployed at [the-reprove.vercel.app](https://the-reprove.vercel.app).
-Vercel deployment: `dpl_9XyDYNGUuGY1zN9WA8LsBKowCyEV` (READY, 2026-09-24).
-The deployment was built from this repository's final verified source state; Studionet contract addresses remain pending until a funded 61999 deployment wallet is available.
+The current production alias points to `reprove-2fokk0lnv-bibidees-projects.vercel.app` (READY, 2026-09-24).
+The live smoke-test receipts and frontend behavior are recorded in `VALIDATION_REPORT.md`. The latest local contract hardening changes must be redeployed after their final commit; no production claim is made for code that has not reached Vercel.
 
 ## Demo evidence
 

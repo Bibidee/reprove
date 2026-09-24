@@ -372,6 +372,22 @@ REGISTERED CONTEXT:
                     "evidence_receipts": receipts,
                     "evidence_snapshot_digest": self._digest(json.dumps(receipts, sort_keys=True, separators=(",", ":"))),
                 }
+            unavailable = any(receipt.get("fetch_status") != "OK" for receipt in receipts)
+            if unavailable or not deterministic_policy_ok:
+                normalized = {
+                    "verdict": "INCONCLUSIVE",
+                    "protocol_compliance": "UNCERTAIN",
+                    "evidence_sufficiency": "UNAVAILABLE" if unavailable else "INSUFFICIENT",
+                    "outcome_satisfied": "UNKNOWN",
+                    "required_evidence_present": "UNKNOWN" if unavailable else "NO",
+                    "summary": (
+                        "One or more required evidence sources were unavailable."
+                        if unavailable
+                        else "The frozen deterministic evidence policy was not satisfied by the submitted manifest."
+                    ),
+                    "evidence_receipts": receipts,
+                    "evidence_snapshot_digest": self._digest(json.dumps(receipts, sort_keys=True, separators=(",", ":"))),
+                }
             return json.dumps(normalized, sort_keys=True, separators=(",", ":"))
 
         def validate(leader_result) -> bool:

@@ -4,13 +4,24 @@ This report records the current repository checks and the completed live smoke-t
 
 ## Current local and production checks
 
-- Unit tests: pytest -q tests/unit — 37 passed.
-- Direct integration tests: pytest -q tests/direct — 13 passed.
+- Unit tests: pytest -q tests/unit — 38 passed.
+- Direct integration tests: pytest -q tests/direct — 22 passed.
+- GenVM lint and validation passed for StudyRegistry, ReplicationEngine, and ResearchPool.
+- ABI schema extraction passed for all three contracts: Registry 7 methods, Engine 8, Pool 9.
 - Release check: scripts/release_check.py — RELEASE CHECK OK.
 - The production frontend is served at https://the-reprove.vercel.app.
 - The latest correct Vercel production deployment is reprove-2fokk0lnv-bibidees-projects.vercel.app, reported READY.
 
-The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. A fresh source-parity deployment of all three contracts, plus the final adversarial evidence matrix, remains a release gate.
+The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. The clean-checkout npm install, typecheck, and production build passed before the final local hardening changes; they must be rerun on the final commit before claiming release completion.
+
+## Adversarial hardening covered locally
+
+- Missing required evidence is forced to INCONCLUSIVE even if a model response claims REPLICATED.
+- An unavailable evidence fetch is forced to INCONCLUSIVE and retains an UNAVAILABLE receipt.
+- Conflicting evidence is recorded as INCONCLUSIVE when consensus reports CONFLICTED.
+- Validators reject a materially changed verdict.
+- ResearchPool tests cover engine-only registration, duplicate records, equal positive/negative reward eligibility, reward caps, insufficient pool balance, unauthorized reclaim, and replayed or excessive withdrawals.
+- INCONCLUSIVE and PROTOCOL_DEVIATION records reserve zero reward.
 
 ## Live smoke-test lifecycle
 
@@ -67,7 +78,7 @@ deployments/studionet.json remains the last verified canonical deployment manife
 Remaining release work:
 
 1. Complete and verify a fresh source-parity deployment of Registry, Engine, and ResearchPool.
-2. Re-run the clean-checkout GenVM/schema and frontend checks after that deployment.
-3. Expand the adversarial lifecycle matrix and attach its receipts.
-4. Commit and push the final evidence updates without including generated build artifacts.
-
+2. Rerun the clean-checkout GenVM/schema and frontend checks on the final commit.
+3. Redeploy the final frontend hardening commit to Vercel and verify the READY deployment.
+4. Expand the adversarial lifecycle matrix with live receipts where the deployed contracts permit it.
+5. Commit and push the final evidence updates without including generated build artifacts.
