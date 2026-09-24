@@ -12,7 +12,7 @@
   },
   "contracts": {
     "studyRegistry": {"address": "0xaeDa3bd10282e7677c9409423b7142Fd4152d2db", "deployTx": "0x12b85efdcc025512dede402bdb3329446927bfae97559c30f2a6e6604a3820fa"},
-    "replicationEngine": {"address": "0x3Ac598f3620971dc672787E2c60BF4e39534FEbd", "deployTx": "0x34a1eb958fed8003f3f4711a0326efaa0bbace52e0150abaf3d808d39811f6bd", "configurePoolTx": ""},
-    "researchPool": {"address": "0xBcD831E176a1392E3f4EfF5dc2cBC8B575E3Fe71", "deployTx": "0x79054393980de761898751dface5a15421b3fbdece289d985fa3793f14bb7b03"}
+    "replicationEngine": {"address": "0x689b6C5f4D3A57571fEA0DAB8b768EeCCe502e37", "deployTx": "0x0e5860387e86b92837b9f4c0d0e88bb135ba2b65845233290e0d61dbad0f54da", "configurePoolTx": "0x5d6dc2b21f8f0d6d68665a23a860be82e88dac2b220c37c8045955a447926360", "poolBindingVerified": false},
+    "researchPool": {"address": "0xaC54aad5a9498B9d6efFA1b3039aB81F3b501c64", "deployTx": "0x42d6ef3ebc446cf3c8b38e239d8f05a63aa97f9f00313888ce8c70693f8f7a81"}
   }
 }
