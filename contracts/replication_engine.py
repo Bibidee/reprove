@@ -180,7 +180,7 @@ class ReplicationEngine(gl.Contract):
             raise gl.vm.UserError("only owner may set pool")
         if self.pool_address:
             raise gl.vm.UserError("pool already configured")
-        pool_text = pool_address.as_hex
+        pool_text = pool_address.as_hex if hasattr(pool_address, "as_hex") else str(pool_address)
         if not pool_text.startswith("0x") or len(pool_text) != 42:
             raise gl.vm.UserError("invalid pool address")
         self.pool_address = pool_text.lower()
