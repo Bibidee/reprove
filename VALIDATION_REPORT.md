@@ -12,7 +12,7 @@ This report records the current repository checks and the completed live smoke-t
 - The production frontend is served at https://the-reprove.vercel.app.
 - The latest correct Vercel production deployment is reprove-2fokk0lnv-bibidees-projects.vercel.app, reported READY.
 
-The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. The clean-checkout npm install, typecheck, and production build passed before the final local hardening changes; they must be rerun on the final commit before claiming release completion.
+The clean-room release check covers the expected frontend routes, including /, /lab, /claim/[studyKey], /attempt/[attemptKey], and /archive/[recordKey]. On clean checkout commit b41a2ed, npm install, npm run typecheck, and npm run build all passed; the build emitted the expected five public routes.
 
 ## Adversarial hardening covered locally
 
@@ -78,7 +78,6 @@ deployments/studionet.json remains the last verified canonical deployment manife
 Remaining release work:
 
 1. Complete and verify a fresh source-parity deployment of Registry, Engine, and ResearchPool.
-2. Rerun the clean-checkout GenVM/schema and frontend checks on the final commit.
-3. Redeploy the final frontend hardening commit to Vercel and verify the READY deployment.
+2. Redeploy the final frontend hardening commit to Vercel and verify the READY deployment.
 4. Expand the adversarial lifecycle matrix with live receipts where the deployed contracts permit it.
 5. Commit and push the final evidence updates without including generated build artifacts.
