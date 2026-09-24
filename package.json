@@ -11,6 +11,9 @@
     "test:direct": "pytest -q tests/direct",
     "guard": "python3 scripts/release_check.py"
   },
+  "dependencies": {
+    "next": "^16.0.0"
+  },
   "devDependencies": {
     "genlayer-js": "^1.1.8",
     "typescript": "^5.9.3",
