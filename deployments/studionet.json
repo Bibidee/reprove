@@ -6,7 +6,7 @@
   "explorer": "https://explorer-studio.genlayer.com",
   "deployedAt": "2026-09-24T19:52:01.583Z",
   "frontend": {
-    "productionUrl": "https://the-reprove.vercel.app",
+    "productionUrl": "https://reprove.vercel.app",
     "vercelDeploymentUrl": "https://reprove-ax0k88w4j-bibidees-projects.vercel.app",
     "deploymentId": "dpl_3SiB9BNAzcpUTmdK5y8nTjWZ5MYg",
     "status": "READY"

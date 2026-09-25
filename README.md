@@ -84,9 +84,9 @@ configuration transaction finalize.
 
 ## Production frontend
 
-The verified production frontend is deployed at [the-reprove.vercel.app](https://the-reprove.vercel.app).
+The verified production frontend is deployed at [reprove.vercel.app](https://reprove.vercel.app).
 The current production deployment is `reprove-ax0k88w4j-bibidees-projects.vercel.app`
-(READY, 2026-09-24), with the public alias at the-reprove.vercel.app.
+(READY, 2026-09-24), with the public production domain at reprove.vercel.app.
 The live smoke-test receipts and frontend behavior are recorded in
 `VALIDATION_REPORT.md`, including the finalized close-study receipt and the
 zero-balance reclaim decision.

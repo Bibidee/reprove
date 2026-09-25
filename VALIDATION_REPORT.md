@@ -25,7 +25,7 @@ is recorded.
 
 Network: GenLayer Studionet, chain `61999`
 RPC: `https://studio.genlayer.com/api`
-Frontend: [the-reprove.vercel.app](https://the-reprove.vercel.app)
+Frontend: [reprove.vercel.app](https://reprove.vercel.app)
 READY deployment: `reprove-ax0k88w4j-bibidees-projects.vercel.app`
 
 The exact addresses, finalized deployment/configuration transaction hashes,
@@ -59,7 +59,7 @@ ANALYSIS, and RESULT_TABLE — across the raw GitHub and jsDelivr origins.
 - Evidence snapshot digest: `79a2bfea2974b20f17039cfccc8038da0b86ac098741fb251a490255a3ccd8fa`.
 - Finalized ResearchPool child: `0x4e7b8e16a22c81d446bce40b02fa097c99c07986efb5e0d1f5981ef44a7d3fe6` — `register_finalized_outcome`, finalized, successful.
 - Assessment digest: `b52d4b4362da33b9bb03d063353cd54a1f9dc66c56980b56deef9c04f53a4442`.
-- Archive: [final-smoke-2026f:final-smoke-attempt-01](https://the-reprove.vercel.app/archive/final-smoke-2026f%3Afinal-smoke-attempt-01).
+- Archive: [final-smoke-2026f:final-smoke-attempt-01](https://reprove.vercel.app/archive/final-smoke-2026f%3Afinal-smoke-attempt-01).
 
 The archive readback showed `SATISFIED`, `SUFFICIENT`, outcome `YES`, verdict
 `REPLICATED`, reward reserved `1 GEN`, and the same evidence snapshot digest.
