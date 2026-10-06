@@ -21,7 +21,13 @@ Owns attempt creation, immutable capsule commitment and semantic assessment. It 
 - required evidence presence
 - provenance and complete-artifact integrity results
 
-This is deliberately not schema-only validation. Each capsule artifact commits to a frozen provenance identity and complete normalized-artifact SHA-256. Validators require the artifact result set, reason codes and deterministic computed result to match, so a mutable or oversized source fails closed instead of silently producing a record.
+This is deliberately not schema-only validation. Each capsule artifact commits to a frozen provenance identity and complete normalized-artifact SHA-256. Validators require the artifact result set, reason codes and deterministic computed result to match, so a mutable or oversized source fails closed instead of silently producing a record. GitHub provenance uses the exact canonical `raw.githubusercontent.com/{owner}/{repo}/{full-commit}/{path}` form; Zenodo provenance uses the exact `zenodo.org/records/{record}/files/{filename}` form.
+
+The deterministic result report uses the frozen analysis schema: one-sample
+profiles report `mean_num`, `mean_den`, and `threshold_met`; grouped mean and
+binary-rate profiles report `difference_num`, `difference_den`, and
+`threshold_met`. Human commentary is stored alongside those fields but cannot
+choose the canonical verdict.
 
 A coherent result must obey the decision law. For example `REPLICATED` is invalid unless protocol compliance is `SATISFIED`, evidence is `SUFFICIENT`, required evidence is present, and the registered outcome criterion is `YES`.
 

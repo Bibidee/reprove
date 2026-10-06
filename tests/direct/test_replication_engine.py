@@ -82,3 +82,24 @@ def test_link_local_ipv4_is_rejected(direct_vm, direct_deploy, direct_alice):
     ])
     with direct_vm.expect_revert("private or non-routable evidence hosts are forbidden"):
         engine.validate_evidence_manifest(raw)
+
+
+def test_active_counter_decrements_once_on_abandon(direct_vm, direct_deploy, direct_bob):
+    engine = direct_deploy("contracts/replication_engine.py", "0x" + "11" * 20, "")
+    engine._study = lambda _study_key: {
+        "status": "OPEN", "attempt_ttl_seconds": 604800,
+    }
+    direct_vm.sender = direct_bob
+    engine.begin_attempt("study", "abandon-once", "A replication statement long enough for validation.")
+    assert engine.get_study_settlement_state("study")["active_attempts"] == 1
+    engine.abandon_attempt("abandon-once")
+    assert engine.get_study_settlement_state("study")["active_attempts"] == 0
+    with direct_vm.expect_revert("attempt is terminal"):
+        engine.abandon_attempt("abandon-once")
+
+
+def test_settlement_counter_underflow_is_rejected(direct_vm, direct_deploy, direct_alice):
+    engine = direct_deploy("contracts/replication_engine.py", "0x" + "11" * 20, "")
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert("settlement counter underflow"):
+        engine._set_counter("study", "active", -1)

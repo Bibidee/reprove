@@ -1,6 +1,7 @@
 # { "Depends": "py-genlayer:1jb45aa8ynh2a9c9xn3b7qqh8sm5q93hwfp7jqmwsfhh8jpz09h6" }
 
 import json
+import re
 from genlayer import *
 
 
@@ -56,7 +57,8 @@ class ResearchPool(gl.Contract):
         return int(json.loads(self.finalized_record_counts_json).get(study_key, 0))
 
     def _set_finalized_count(self, study_key: str, value: int) -> None:
-        counts = json.loads(self.finalized_record_counts_json); counts[study_key] = max(int(value), 0)
+        if int(value) < 0: raise gl.vm.UserError("finalized record counter underflow")
+        counts = json.loads(self.finalized_record_counts_json); counts[study_key] = int(value)
         self.finalized_record_counts_json = json.dumps(counts, sort_keys=True, separators=(",", ":"))
 
     def _study(self, study_key: str) -> dict:
@@ -98,7 +100,7 @@ class ResearchPool(gl.Contract):
         record_key = study_key + ":" + attempt_key; records = json.loads(self.final_records)
         if record_key in records: raise gl.vm.UserError("final record already registered")
         if verdict not in ["REPLICATED", "FAILED_TO_REPLICATE", "PROTOCOL_DEVIATION", "INCONCLUSIVE"]: raise gl.vm.UserError("invalid verdict")
-        if len(assessment_digest) != 64: raise gl.vm.UserError("invalid assessment digest")
+        if re.fullmatch(r"[0-9a-fA-F]{64}", str(assessment_digest)) is None: raise gl.vm.UserError("invalid assessment digest")
         study = self._study(study_key); reward = int(study.get("reward_per_attempt_wei", 0)); maximum = int(study.get("max_rewarded_attempts", 0)); eligible = verdict in ["REPLICATED", "FAILED_TO_REPLICATE"]
         reserved = 0; count = int(self.rewarded_count.get(study_key) or 0); balance = int(self.study_balances.get(study_key) or 0)
         if eligible and reward > 0 and count < maximum and balance >= reward:

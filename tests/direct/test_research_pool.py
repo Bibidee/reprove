@@ -61,6 +61,30 @@ def test_reward_cap_and_ineligible_verdicts_never_overpay(
     assert pool.get_final_record("s:unknown")["reward_reserved_wei"] == 0
 
 
+def test_positive_and_negative_valid_replications_receive_equal_rewards(
+    direct_vm, direct_deploy, direct_alice, direct_bob
+):
+    pool = _setup_pool(direct_deploy, direct_alice, reward=10, maximum=2)
+    researcher = _address(direct_bob)
+    _as_engine(direct_vm)
+    pool.study_balances["s"] = 20
+    pool.register_finalized_outcome("s", "positive", researcher, "REPLICATED", "a" * 64)
+    pool.register_finalized_outcome("s", "negative", researcher, "FAILED_TO_REPLICATE", "b" * 64)
+    assert pool.get_claimable(researcher) == 20
+    assert pool.get_study_pool("s") == {"available_wei": 0, "rewarded_attempts": 2}
+
+
+def test_zero_withdrawal_and_counter_underflow_are_rejected(
+    direct_vm, direct_deploy, direct_alice, direct_bob
+):
+    pool = _setup_pool(direct_deploy, direct_alice)
+    with direct_vm.expect_revert("finalized record counter underflow"):
+        pool._set_finalized_count("s", -1)
+    direct_vm.sender = direct_bob
+    with direct_vm.expect_revert("withdraw amount must be positive"):
+        pool.withdraw(0)
+
+
 def test_insufficient_pool_does_not_reserve_a_reward(
     direct_vm, direct_deploy, direct_alice, direct_bob
 ):

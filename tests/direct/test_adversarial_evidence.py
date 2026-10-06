@@ -1,5 +1,6 @@
 import hashlib
 import json
+import pytest
 
 
 def _address(value):
@@ -102,6 +103,20 @@ def test_deterministic_threshold_and_hashes_drive_replicated_result(direct_vm, d
     assert all(item["artifact_integrity_status"] == "VERIFIED" for item in assessment["artifact_results"])
 
 
+def test_wrong_reported_numeric_fields_do_not_choose_canonical_verdict(direct_vm, direct_deploy, direct_alice, direct_bob):
+    engine, study, researcher = _setup(direct_deploy, direct_bob)
+    _begin(direct_vm, engine, researcher, "wrong-report-v2")
+    capsule = json.loads(_capsule(study, "wrong-report-v2"))
+    capsule["reported_result"] = {"mean_num": 1, "mean_den": 1, "threshold_met": False, "analysis_statement": "incorrect report"}
+    direct_vm.sender = direct_bob
+    engine.commit_capsule("wrong-report-v2", json.dumps(capsule))
+    _mocks(direct_vm)
+    assessment = engine.evaluate_attempt("wrong-report-v2")
+    assert assessment["verdict"] == "REPLICATED"
+    assert assessment["reported_result_match"] == "NO"
+    assert assessment["computed_result"]["mean_num"] == 1000
+
+
 def test_changed_artifact_fails_closed_even_when_model_says_positive(direct_vm, direct_deploy, direct_alice, direct_bob):
     engine, study, researcher = _setup(direct_deploy, direct_bob)
     _begin(direct_vm, engine, researcher, "changed-v2")
@@ -134,5 +149,88 @@ def test_mutable_github_reference_is_rejected(direct_vm, direct_deploy, direct_a
     item["url"] = "https://raw.githubusercontent.com/Bibidee/reprove/main/data.json"
     item["provenance"] = {"commit": commit, "repository": "bibidee/reprove", "path": "data.json"}
     direct_vm.sender = direct_alice
-    with direct_vm.expect_revert("mutable GitHub branch reference is forbidden"):
+    with direct_vm.expect_revert("GitHub URL does not bind declared commit artifact"):
+        engine.validate_capsule("v2-study", json.dumps(capsule))
+
+
+def _set_provenance_policy(study, profiles):
+    policy = study["evidence_policy"]["provenance_policy"]
+    policy["allowed_profiles"] = profiles
+    policy["minimum_provenance_level"] = 0
+
+
+def test_github_commit_requires_canonical_raw_host_and_path(direct_vm, direct_deploy, direct_alice, direct_bob):
+    engine, study, _ = _setup(direct_deploy, direct_bob)
+    _set_provenance_policy(study, ["GITHUB_COMMIT", "GENERIC_CONTENT_ADDRESS"])
+    capsule = json.loads(_capsule(study, "github-valid"))
+    commit = "a" * 40
+    item = capsule["artifacts"][0]
+    item["authority_profile"] = "GITHUB_COMMIT"
+    item["artifact_id"] = "github:bibidee/reprove@" + commit + ":data.json"
+    item["url"] = "https://raw.githubusercontent.com/Bibidee/reprove/" + commit + "/data.json"
+    item["provenance"] = {"commit": commit, "repository": "bibidee/reprove", "path": "data.json"}
+    direct_vm.sender = direct_alice
+    assert engine.validate_capsule("v2-study", json.dumps(capsule))["profiles"] == ["GENERIC_CONTENT_ADDRESS", "GITHUB_COMMIT"]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://attacker.example/bibidee/reprove/" + "a" * 40 + "/data.json",
+        "https://raw.githubusercontent.com.attacker.example/bibidee/reprove/" + "a" * 40 + "/data.json",
+        "https://github.com.attacker.example/bibidee/reprove/" + "a" * 40 + "/data.json",
+        "https://raw.githubusercontent.com/Bibidee/reprove/" + "a" * 40 + "/other.json",
+        "https://raw.githubusercontent.com/Bibidee/reprove/" + "a" * 40 + "/data.json?repository=bibidee/reprove",
+        "https://raw.githubusercontent.com/Bibidee/reprove/main/data.json",
+    ],
+)
+def test_github_commit_rejects_deceptive_or_mutable_urls(direct_vm, direct_deploy, direct_alice, direct_bob, url):
+    engine, study, _ = _setup(direct_deploy, direct_bob)
+    _set_provenance_policy(study, ["GITHUB_COMMIT", "GENERIC_CONTENT_ADDRESS"])
+    capsule = json.loads(_capsule(study, "github-invalid"))
+    commit = "a" * 40
+    item = capsule["artifacts"][0]
+    item["authority_profile"] = "GITHUB_COMMIT"
+    item["artifact_id"] = "github:bibidee/reprove@" + commit + ":data.json"
+    item["url"] = url
+    item["provenance"] = {"commit": commit, "repository": "bibidee/reprove", "path": "data.json"}
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert():
+        engine.validate_capsule("v2-study", json.dumps(capsule))
+
+
+def test_zenodo_record_binds_exact_record_and_filename(direct_vm, direct_deploy, direct_alice, direct_bob):
+    engine, study, _ = _setup(direct_deploy, direct_bob)
+    _set_provenance_policy(study, ["ZENODO_RECORD", "GENERIC_CONTENT_ADDRESS"])
+    capsule = json.loads(_capsule(study, "zenodo-valid"))
+    item = capsule["artifacts"][0]
+    item["authority_profile"] = "ZENODO_RECORD"
+    item["artifact_id"] = "zenodo:12345:data.json"
+    item["url"] = "https://zenodo.org/records/12345/files/data.json"
+    item["provenance"] = {"record_id": "12345", "filename": "data.json"}
+    direct_vm.sender = direct_alice
+    assert engine.validate_capsule("v2-study", json.dumps(capsule))["profiles"] == ["GENERIC_CONTENT_ADDRESS", "ZENODO_RECORD"]
+
+
+@pytest.mark.parametrize(
+    "url",
+    [
+        "https://zenodo.org/records/99999/files/data.json",
+        "https://zenodo.org/records/12345/files/other.json",
+        "https://zenodo.org/records/12345/files/data.json?record_id=99999",
+        "https://zenodo.org/record/12345/files/data.json",
+        "https://zenodo.org/records/12345/files/../data.json",
+    ],
+)
+def test_zenodo_record_rejects_mismatched_or_ambiguous_urls(direct_vm, direct_deploy, direct_alice, direct_bob, url):
+    engine, study, _ = _setup(direct_deploy, direct_bob)
+    _set_provenance_policy(study, ["ZENODO_RECORD", "GENERIC_CONTENT_ADDRESS"])
+    capsule = json.loads(_capsule(study, "zenodo-invalid"))
+    item = capsule["artifacts"][0]
+    item["authority_profile"] = "ZENODO_RECORD"
+    item["artifact_id"] = "zenodo:12345:data.json"
+    item["url"] = url
+    item["provenance"] = {"record_id": "12345", "filename": "data.json"}
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert():
         engine.validate_capsule("v2-study", json.dumps(capsule))

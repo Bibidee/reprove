@@ -84,9 +84,11 @@ class ReplicationEngine(gl.Contract):
         return int(counters.get(study_key, {}).get(name, 0))
 
     def _set_counter(self, study_key: str, name: str, value: int) -> None:
+        if int(value) < 0:
+            raise gl.vm.UserError("settlement counter underflow")
         counters = json.loads(self.study_counters_json)
         row = counters.get(study_key, {})
-        row[name] = max(int(value), 0)
+        row[name] = int(value)
         counters[study_key] = row
         self.study_counters_json = json.dumps(counters, sort_keys=True, separators=(",", ":"))
 
@@ -204,9 +206,17 @@ class ReplicationEngine(gl.Contract):
             path = str(provenance.get("path", "")).strip()
             if re.fullmatch(r"[0-9a-f]{40}", commit) is None or re.fullmatch(r"[a-z0-9_.-]+/[a-z0-9_.-]+", repository) is None or not path or len(path) > 240:
                 raise gl.vm.UserError("GitHub commit provenance is incomplete")
-            if re.search(r"/(main|master|latest)(/|$)", url.lower()) is not None:
-                raise gl.vm.UserError("mutable GitHub branch reference is forbidden")
-            if commit not in url.lower() or repository not in url.lower() or "/" + path.lower() not in url.lower():
+            if path.startswith("/") or "\\" in path or "%" in path or "//" in path or any(part in ["", ".", ".."] for part in path.split("/")):
+                raise gl.vm.UserError("GitHub artifact path is ambiguous")
+            parsed = urlsplit(url)
+            if parsed.scheme != "https" or parsed.hostname != "raw.githubusercontent.com" or parsed.username or parsed.password or parsed.port not in [None, 443] or parsed.query or parsed.fragment:
+                raise gl.vm.UserError("GitHub URL must use the canonical raw host")
+            url_parts = parsed.path.split("/")
+            if len(url_parts) < 5 or any(part == "" for part in url_parts[1:]) or url_parts[3].lower() != commit:
+                raise gl.vm.UserError("GitHub URL does not bind declared commit artifact")
+            url_repository = url_parts[1].lower() + "/" + url_parts[2].lower()
+            url_path = "/".join(url_parts[4:])
+            if url_repository != repository or url_path != path:
                 raise gl.vm.UserError("GitHub URL does not bind declared commit artifact")
             if artifact_id != "github:" + repository + "@" + commit + ":" + path:
                 raise gl.vm.UserError("GitHub artifact identity mismatch")
@@ -214,11 +224,14 @@ class ReplicationEngine(gl.Contract):
         if profile == "ZENODO_RECORD":
             record = str(provenance.get("record_id", "")).strip()
             filename = str(provenance.get("filename", "")).strip()
-            if re.fullmatch(r"[0-9]+", record) is None or not filename or len(filename) > 220:
+            if re.fullmatch(r"[0-9]+", record) is None or re.fullmatch(r"[A-Za-z0-9][A-Za-z0-9._-]{0,219}", filename) is None:
                 raise gl.vm.UserError("Zenodo record provenance is incomplete")
-            host = urlsplit(url).hostname or ""
-            if host.lower() not in ["zenodo.org", "www.zenodo.org", "doi.org", "www.doi.org"] or record not in url:
-                raise gl.vm.UserError("Zenodo URL does not bind declared record")
+            parsed = urlsplit(url)
+            if parsed.scheme != "https" or parsed.hostname != "zenodo.org" or parsed.username or parsed.password or parsed.port not in [None, 443] or parsed.query or parsed.fragment:
+                raise gl.vm.UserError("Zenodo URL must use the canonical records host")
+            url_parts = parsed.path.split("/")
+            if url_parts != ["", "records", record, "files", filename]:
+                raise gl.vm.UserError("Zenodo URL does not bind declared record artifact")
             if artifact_id != "zenodo:" + record + ":" + filename:
                 raise gl.vm.UserError("Zenodo artifact identity mismatch")
             return {"level": 2, "profile": profile, "identity": artifact_id}
@@ -355,8 +368,11 @@ class ReplicationEngine(gl.Contract):
         return rows
 
     def _threshold(self, numerator: int, denominator: int, spec: dict) -> bool:
-        threshold = int(spec.get("threshold_scaled", 0)); scale = int(spec.get("scale", 1)); comparator = spec.get("comparator", ">=")
-        left = numerator * scale; right = threshold * denominator
+        # `numerator / denominator` and `threshold_scaled` are already in the
+        # same fixed-point units. Multiplying the numerator by `scale` here
+        # would double-scale every decimal observation.
+        threshold = int(spec.get("threshold_scaled", 0)); comparator = spec.get("comparator", ">=")
+        left = numerator; right = threshold * denominator
         if comparator == ">=": return left >= right
         if comparator == ">": return left > right
         if comparator == "<=": return left <= right
@@ -375,6 +391,8 @@ class ReplicationEngine(gl.Contract):
         if profile not in ["ONE_SAMPLE_THRESHOLD", "TWO_GROUP_MEAN_DIFF", "BINARY_RATE_DIFF"]:
             raise gl.vm.UserError("unsupported analysis profile")
         scale = int(spec.get("scale", 1)); minimum = int(spec.get("min_value_scaled", -1000000000000000)); maximum = int(spec.get("max_value_scaled", 1000000000000000))
+        if scale not in [1, 10, 100, 1000, 10000, 100000, 1000000] or minimum > maximum:
+            raise gl.vm.UserError("analysis fixed-point configuration is invalid")
         if profile == "ONE_SAMPLE_THRESHOLD":
             total = 0; field = spec["value_field"]
             for row in rows:
@@ -405,7 +423,8 @@ class ReplicationEngine(gl.Contract):
                 if group == a: count_a += 1; success_a += int(success)
                 else: count_b += 1; success_b += int(success)
             if count_a == 0 or count_b == 0: raise gl.vm.UserError("empty binary group")
-            numerator = success_b * count_a - success_a * count_b; denominator = count_a * count_b
+            numerator = (success_b * count_a - success_a * count_b) * scale; denominator = count_a * count_b
+            if abs(numerator) > self.MAX_INT: raise gl.vm.UserError("numeric bound exceeded")
             computed = {"profile": profile, "group_a": a, "group_b": b, "success_a": success_a, "total_a": count_a, "success_b": success_b, "total_b": count_b, "difference_num": numerator, "difference_den": denominator, "threshold_scaled": int(spec.get("threshold_scaled", 0)), "threshold_met": self._threshold(numerator, denominator, spec)}
         computed["reported_result_match"] = self._reported_match(reported, computed)
         return computed

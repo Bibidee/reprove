@@ -10,8 +10,27 @@ export type EvidenceLeaf = {
   authority_profile?: AuthorityProfile;
   artifact_id?: string;
   sha256?: string;
-  provenance?: Record<string, unknown>;
+  provenance?: {
+    repository?: string;
+    commit?: string;
+    path?: string;
+    record_id?: string;
+    filename?: string;
+    [key: string]: unknown;
+  };
   media_type?: string;
+};
+
+export type ReportedResult = {
+  mean_num?: number;
+  mean_den?: number;
+  difference_num?: number;
+  difference_den?: number;
+  threshold_met?: boolean;
+  sample_size?: string;
+  observed_effect?: string;
+  analysis_statement?: string;
+  notes?: string;
 };
 
 export type EvidenceReceipt = {

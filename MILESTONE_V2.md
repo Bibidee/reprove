@@ -27,7 +27,12 @@ study can be reclaimed in O(1): the pool compares engine active/assessed
 counters with its finalized child-record counter and never scans historical
 attempts.
 
-## Release verification
+## Audit and release verification
+
+The current branch is corrected locally and is not yet redeployed. Do not use
+the previous deployment manifest or historical V1-style receipts as proof of a
+fresh V2 lifecycle. A fresh Studionet deployment and two-wallet lifecycle are
+the next stage after independent re-audit.
 
 Run the full local suite before deployment:
 
@@ -41,7 +46,8 @@ python scripts/release_check.py
 cd web && npm run typecheck && npm run build
 ```
 
-Deploy only to Studionet chain `61999`, update the three Vercel contract
-variables from the fresh manifest, and prove the two-wallet capsule lifecycle
-through finalized parent assessment, finalized ResearchPool child, equal valid
-outcome rewards, withdrawal, close, and permissionless reclaim.
+After the audit passes, deploy only to Studionet chain `61999`, update the
+three Vercel contract variables from the fresh manifest, and prove the
+two-wallet capsule lifecycle through finalized parent assessment, finalized
+ResearchPool child, equal valid outcome rewards, withdrawal, close, and
+permissionless reclaim. That lifecycle is intentionally still pending.

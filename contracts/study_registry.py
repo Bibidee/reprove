@@ -134,8 +134,6 @@ class StudyRegistry(gl.Contract):
                 raise gl.vm.UserError("analysis groups must differ")
         if profile == "BINARY_RATE_DIFF":
             result["success_field"] = self._must_text(raw.get("success_field", "success"), "analysis_spec.success_field", 1, 64)
-            if scale != 1:
-                raise gl.vm.UserError("binary rate analysis scale must be 1")
         return result
 
     def _normalize_provenance(self, raw: dict) -> dict:

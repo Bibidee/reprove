@@ -21,7 +21,7 @@
     "genlayer-py": "v0.18",
     "genlayer-test": "v0.29"
   },
-  "deploymentStatus": "V2 deployed and health-verified on Studionet 61999; production frontend READY at reprove.vercel.app",
+  "deploymentStatus": "V2 audit corrections committed locally; fresh Studionet deployment and lifecycle pending",
   "frontendIdentity": {
     "metaphor": "research journal / replication atlas / protocol paper / notebook / archive",
     "palette": [

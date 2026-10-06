@@ -72,11 +72,11 @@ npm run dev
 
 ## Deployment
 
-The repository intentionally contains **no private key**. The current verified
-Studionet deployment, including finalized deployment/configuration receipts,
-source hashes, schemas, and Engine → ResearchPool binding, is recorded in
-`deployments/studionet.json`. See `DEPLOYMENT_RUNBOOK.md` and
-`MEGA_PROMPT_FOR_AGENT.md`.
+The repository intentionally contains **no private key**. The prior Studionet
+deployment is retained in `deployments/studionet.json` for traceability, but it
+predates the current audit corrections and is not evidence for the corrected
+V2 sources. Do not use it for a fresh lifecycle. See `DEPLOYMENT_RUNBOOK.md`
+and `MEGA_PROMPT_FOR_AGENT.md`.
 
 The deployment script writes canonical addresses and transaction IDs to
 `deployments/studionet.json` after all three contracts and the engine-to-pool
@@ -84,12 +84,11 @@ configuration transaction finalize.
 
 ## Production frontend
 
-The verified production frontend is deployed at [reprove.vercel.app](https://reprove.vercel.app).
-The current production deployment is `reprove-62054yb9d-bibidees-projects.vercel.app`
-(READY, 2026-10-06), with the public production domain at reprove.vercel.app.
-The live smoke-test receipts and frontend behavior are recorded in
-`VALIDATION_REPORT.md`, including the finalized close-study receipt and the
-zero-balance reclaim decision.
+The existing production frontend is available at
+[reprove.vercel.app](https://reprove.vercel.app), but its prior deployment and
+live receipts are historical. A fresh frontend deployment should be made only
+after the corrected contracts are deployed and the environment variables are
+updated from the fresh manifest.
 
 ## Demo evidence
 
