@@ -21,7 +21,7 @@
     "genlayer-py": "v0.18",
     "genlayer-test": "v0.29"
   },
-  "deploymentStatus": "handoff-ready; recipient must deploy with funded wallet",
+  "deploymentStatus": "V2 deployed and health-verified on Studionet 61999; production frontend READY at reprove.vercel.app",
   "frontendIdentity": {
     "metaphor": "research journal / replication atlas / protocol paper / notebook / archive",
     "palette": [
@@ -36,5 +36,5 @@
     "cleanRoomGuard": "scripts/release_check.py"
   },
   "finalityModel": "parent evaluation must finalize before ResearchPool child is created; live release proof must separately verify deterministic child FINALIZED",
-  "evidenceCommitment": "validator-matched bounded evidence-window receipts + aggregate SHA-256 snapshot digest"
+  "evidenceCommitment": "immutable typed replication capsules, frozen provenance profiles, complete-artifact SHA-256 verification, and validator-matched deterministic assessment fields"
 }

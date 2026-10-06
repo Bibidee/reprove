@@ -17,6 +17,6 @@ export async function readStudy(key:string):Promise<Study|null>{
 }
 export async function createStudy(account:string,d:StudyDraft,onState?:(s:ResearchTxState)=>void){
   const rewardWei=parseGen(d.rewardGen||"0");
-  return writeResearchTx({account,address:ADDRESSES.registry,functionName:"create_study",args:[d.studyKey,d.title,d.field,d.claim,JSON.stringify(d.protocol),d.outcomeRule,JSON.stringify(d.evidencePolicy),rewardWei,BigInt(d.maxRewardedAttempts||"0")],onState});
+  return writeResearchTx({account,address:ADDRESSES.registry,functionName:"create_study_v2",args:[d.studyKey,d.title,d.field,d.claim,JSON.stringify(d.protocol),d.outcomeRule,JSON.stringify(d.evidencePolicy),JSON.stringify(d.analysisSpec),JSON.stringify(d.provenancePolicy),BigInt(d.attemptTtlSeconds||"604800"),rewardWei,BigInt(d.maxRewardedAttempts||"0")],onState});
 }
 export async function closeStudy(account:string,key:string,onState?:(s:ResearchTxState)=>void){return writeResearchTx({account,address:ADDRESSES.registry,functionName:"close_study",args:[key],onState})}

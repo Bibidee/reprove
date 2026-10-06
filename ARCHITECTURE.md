@@ -8,19 +8,20 @@ Scientific replication has adversarial incentives: original authors, replicators
 
 ### StudyRegistry
 
-Owns immutable preregistration facts. Creation freezes the claim, protocol, outcome rule, evidence policy, fixed reward amount and reward count cap. The creator can close a study but cannot rewrite it.
+Owns immutable preregistration facts. V2 creation freezes the claim, protocol, outcome rule, typed evidence policy, deterministic analysis profile, provenance policy, artifact-size limit, attempt TTL, fixed reward amount and reward count cap. The creator can close a study but cannot rewrite it.
 
 ### ReplicationEngine
 
-Owns attempt creation and semantic assessment. It retrieves 2–8 typed HTTPS evidence sources inside the nondeterministic block. The leader produces a bounded structured finding. Validators independently rerun the evidence retrieval and assessment and compare the material fields:
+Owns attempt creation, immutable capsule commitment and semantic assessment. It retrieves 2–8 typed HTTPS evidence sources inside the nondeterministic block. The leader produces a bounded structured finding. Validators independently rerun the evidence retrieval and assessment and compare the material fields:
 
 - verdict
 - protocol compliance
 - evidence sufficiency
-- outcome criterion
+- deterministic statistical profile and computed result
 - required evidence presence
+- provenance and complete-artifact integrity results
 
-This is deliberately not schema-only validation. For each source, the leader and validators also commit to an exact bounded text window digest (`content_window_sha256`) plus fetch status and size. Validators require the evidence-receipt set and aggregate snapshot digest to match, so a mutable source that changes materially between nodes causes disagreement instead of silently producing a record.
+This is deliberately not schema-only validation. Each capsule artifact commits to a frozen provenance identity and complete normalized-artifact SHA-256. Validators require the artifact result set, reason codes and deterministic computed result to match, so a mutable or oversized source fails closed instead of silently producing a record.
 
 A coherent result must obey the decision law. For example `REPLICATED` is invalid unless protocol compliance is `SATISFIED`, evidence is `SUFFICIENT`, required evidence is present, and the registered outcome criterion is `YES`.
 
@@ -42,7 +43,7 @@ A valid positive replication (`REPLICATED`) and valid negative replication (`FAI
 - Duplicate exact evidence URLs are rejected.
 - Evidence kinds are bounded and semantic.
 - A study may freeze exact allowed and required HTTPS evidence origins before replication; the engine enforces those origin constraints deterministically before semantic evaluation.
-- Fetched content is truncated before prompt construction.
+- Fetched content is never silently truncated; the frozen size policy fails closed when exceeded.
 - Evidence is explicitly treated as hostile data; prompt instructions contained inside evidence are not followed.
 - Missing or unavailable sources must be capable of producing `INCONCLUSIVE` rather than a forced answer.
 

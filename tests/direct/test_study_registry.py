@@ -89,3 +89,40 @@ def test_origin_policy_is_frozen_and_normalized(direct_vm, direct_deploy, direct
     study = registry.get_study("s-origin-2")
     assert study["evidence_policy"]["allowed_origins"] == ["https://zenodo.org"]
     assert study["evidence_policy"]["required_origins"] == ["https://zenodo.org"]
+
+
+def test_v2_freezes_analysis_provenance_and_ttl(direct_vm, direct_deploy, direct_alice):
+    registry = direct_deploy("contracts/study_registry.py")
+    direct_vm.sender = direct_alice
+    registry.create_study_v2(
+        "v2-registry", "Frozen V2 registry policy", "Software engineering",
+        "A preregistered claim long enough to pass the minimum validation boundary.",
+        json.dumps({"population":"P","procedure":"P","measurement":"M","analysis":"A","window":"W"}),
+        "A registered outcome rule long enough to be considered meaningful.",
+        json.dumps({"required_kinds":["DATASET","METHOD"],"min_distinct_origins":2}),
+        json.dumps({"profile":"ONE_SAMPLE_THRESHOLD","value_field":"value","scale":1000,"threshold_scaled":500}),
+        json.dumps({"immutable_required":True,"allowed_profiles":["GENERIC_CONTENT_ADDRESS"],"minimum_provenance_level":1,"max_artifact_chars":12000}),
+        3600, 0, 0,
+    )
+    study = registry.get_study("v2-registry")
+    assert study["revision"] == 2
+    assert study["attempt_ttl_seconds"] == 3600
+    assert study["analysis_spec"]["profile"] == "ONE_SAMPLE_THRESHOLD"
+    assert study["analysis_spec"]["scale"] == 1000
+    assert study["evidence_policy"]["provenance_policy"]["immutable_required"] is True
+    assert study["study_digest"]
+
+
+def test_v2_rejects_non_decimal_scale(direct_vm, direct_deploy, direct_alice):
+    registry = direct_deploy("contracts/study_registry.py")
+    direct_vm.sender = direct_alice
+    with direct_vm.expect_revert("analysis_spec.scale must be a power of ten"):
+        registry.create_study_v2(
+            "v2-scale", "Frozen V2 scale policy", "Software engineering",
+            "A preregistered claim long enough to pass the minimum validation boundary.",
+            json.dumps({"population":"P","procedure":"P","measurement":"M","analysis":"A","window":"W"}),
+            "A registered outcome rule long enough to be considered meaningful.",
+            json.dumps({"required_kinds":["DATASET","METHOD"]}),
+            json.dumps({"profile":"ONE_SAMPLE_THRESHOLD","value_field":"value","scale":3,"threshold_scaled":1}),
+            json.dumps({"immutable_required":True}), 3600, 0, 0,
+        )

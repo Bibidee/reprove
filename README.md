@@ -2,14 +2,14 @@
 
 REPROVE is a GenLayer-native preregistration and scientific replication protocol designed for GenLayer Studionet (chain ID **61999**).
 
-A study creator freezes a claim, replication protocol, outcome rule, typed evidence policy, optional exact origin allow/require lists, and optional fixed reward policy before results are known. A replicator opens a notebook, publishes typed public evidence, and submits a reported result. GenLayer validators independently retrieve the same public evidence and determine one of four bounded outcomes:
+A study creator freezes a claim, replication protocol, outcome rule, typed evidence policy, deterministic analysis profile, immutable provenance policy, attempt TTL, and optional fixed reward policy before results are known. A replicator opens a notebook, commits a typed immutable capsule, and submits a reported result. GenLayer validators independently retrieve the same public evidence and determine one of four bounded outcomes:
 
 - `REPLICATED`
 - `FAILED_TO_REPLICATE`
 - `PROTOCOL_DEVIATION`
 - `INCONCLUSIVE`
 
-The semantic evaluation does **not** claim universal scientific truth. It evaluates one replication against one frozen protocol and outcome rule. Each consensus assessment also commits to bounded evidence-window SHA-256 receipts, so the stored assessment digest binds the exact evidence representation used by consensus rather than only the submitter's URLs.
+The semantic evaluation does **not** claim universal scientific truth. It evaluates one replication against one frozen protocol and outcome rule. Each capsule binds frozen artifact identities and complete normalized-artifact SHA-256 values. The assessment digest also binds deterministic recomputation, provenance/integrity results and bounded reason codes rather than only the submitter's URLs.
 
 ## Architecture
 
@@ -85,8 +85,8 @@ configuration transaction finalize.
 ## Production frontend
 
 The verified production frontend is deployed at [reprove.vercel.app](https://reprove.vercel.app).
-The current production deployment is `reprove-ax0k88w4j-bibidees-projects.vercel.app`
-(READY, 2026-09-24), with the public production domain at reprove.vercel.app.
+The current production deployment is `reprove-62054yb9d-bibidees-projects.vercel.app`
+(READY, 2026-10-06), with the public production domain at reprove.vercel.app.
 The live smoke-test receipts and frontend behavior are recorded in
 `VALIDATION_REPORT.md`, including the finalized close-study receipt and the
 zero-balance reclaim decision.

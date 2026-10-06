@@ -5,7 +5,7 @@ import {createStudy} from "@/contracts/study-registry";
 import type {StudyDraft} from "@/research/study/study-model";
 import {inspectTransaction,finalizeResearchTx,type ResearchTxState} from "@/consensus/write-pipeline";
 
-const initial:StudyDraft={studyKey:"",title:"",field:"",claim:"",protocol:{population:"",procedure:"",measurement:"",analysis:"",window:""},outcomeRule:"",evidencePolicy:{required_kinds:["DATASET","METHOD","ANALYSIS","RESULT_TABLE"],min_distinct_origins:2,allowed_origins:[],required_origins:[],notes:""},rewardGen:"0",maxRewardedAttempts:"0"};
+const initial:StudyDraft={studyKey:"",title:"",field:"",claim:"",protocol:{population:"",procedure:"",measurement:"",analysis:"",window:""},outcomeRule:"",evidencePolicy:{required_kinds:["DATASET","METHOD","ANALYSIS","RESULT_TABLE"],min_distinct_origins:2,min_distinct_artifacts:4,allowed_origins:[],required_origins:[],notes:""},analysisSpec:{version:1,profile:"ONE_SAMPLE_THRESHOLD",schema_version:1,value_field:"value",scale:1000,comparator:">=",threshold_scaled:0,min_value_scaled:-1000000000000000,max_value_scaled:1000000000000000},provenancePolicy:{version:1,immutable_required:true,allowed_profiles:["GITHUB_COMMIT","ZENODO_RECORD","GENERIC_CONTENT_ADDRESS"],required_profiles:[],minimum_provenance_level:1,max_artifact_chars:48000,machine_readable_dataset:true},attemptTtlSeconds:"604800",rewardGen:"0",maxRewardedAttempts:"0"};
 const steps=["claim","protocol","outcome","evidence","reward","freeze"];
 export function RegisterStudy({onExit,onCreated}:{onExit:()=>void;onCreated:()=>void}){
  const w=useResearcher();const[d,setD]=useState(initial),[step,setStep]=useState(0),[err,setErr]=useState(""),[tx,setTx]=useState<ResearchTxState|null>(null);const p=d.protocol;

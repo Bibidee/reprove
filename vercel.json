@@ -1,5 +1,5 @@
 {
   "framework": "nextjs",
-  "installCommand": "npm install",
+  "installCommand": "cd web && npm install",
   "buildCommand": "npm run build"
 }
