@@ -1,4 +1,11 @@
 import json
+import sys
+
+from test_adversarial_evidence import _capsule, _mocks, _study
+
+
+def _set_direct_time(timestamp):
+    sys.modules["genlayer.gl"].message_raw["datetime"] = timestamp
 
 
 def test_manifest_validation_rejects_duplicate_urls(direct_vm, direct_deploy, direct_alice):
@@ -96,6 +103,64 @@ def test_active_counter_decrements_once_on_abandon(direct_vm, direct_deploy, dir
     assert engine.get_study_settlement_state("study")["active_attempts"] == 0
     with direct_vm.expect_revert("attempt is terminal"):
         engine.abandon_attempt("abandon-once")
+
+
+def test_notebook_expiry_decrements_active_counter_once(direct_vm, direct_deploy, direct_bob):
+    engine = direct_deploy("contracts/replication_engine.py", "0x" + "11" * 20, "")
+    engine._study = lambda _study_key: {
+        "status": "OPEN", "attempt_ttl_seconds": 60,
+    }
+    direct_vm.warp("2026-01-01T00:00:00Z")
+    _set_direct_time("2026-01-01T00:00:00Z")
+    direct_vm.sender = direct_bob
+    engine.begin_attempt("study", "expired-notebook", "A replication statement long enough for validation.")
+    assert engine.get_study_settlement_state("study") == {"active_attempts": 1, "assessed_attempts": 0}
+    direct_vm.warp("2026-01-01T00:01:00Z")
+    _set_direct_time("2026-01-01T00:01:00Z")
+    engine.expire_attempt("expired-notebook")
+    assert engine.get_attempt("expired-notebook")["state"] == "EXPIRED"
+    assert engine.get_study_settlement_state("study") == {"active_attempts": 0, "assessed_attempts": 0}
+    with direct_vm.expect_revert("attempt is terminal"):
+        engine.expire_attempt("expired-notebook")
+
+
+def test_committed_capsule_expiry_decrements_active_counter_once(
+    direct_vm, direct_deploy, direct_bob
+):
+    engine = direct_deploy("contracts/replication_engine.py", "0x" + "11" * 20, "")
+    study = _study()
+    study["attempt_ttl_seconds"] = 60
+    engine._study = lambda _study_key: study
+    direct_vm.warp("2026-01-01T00:00:00Z")
+    _set_direct_time("2026-01-01T00:00:00Z")
+    direct_vm.sender = direct_bob
+    engine.begin_attempt("v2-study", "expired-capsule", "A replication statement long enough for validation.")
+    engine.commit_capsule("expired-capsule", _capsule(study, "expired-capsule"))
+    assert engine.get_attempt("expired-capsule")["state"] == "CAPSULE_COMMITTED"
+    direct_vm.warp("2026-01-01T00:01:00Z")
+    _set_direct_time("2026-01-01T00:01:00Z")
+    engine.expire_attempt("expired-capsule")
+    assert engine.get_attempt("expired-capsule")["state"] == "EXPIRED"
+    assert engine.get_study_settlement_state("v2-study") == {"active_attempts": 0, "assessed_attempts": 0}
+
+
+def test_assessment_moves_counter_and_cannot_finalize_twice(
+    direct_vm, direct_deploy, direct_bob
+):
+    engine = direct_deploy("contracts/replication_engine.py", "0x" + "11" * 20, "")
+    study = _study()
+    engine._study = lambda _study_key: study
+    direct_vm.sender = direct_bob
+    engine.begin_attempt("v2-study", "assessed-once", "A replication statement long enough for validation.")
+    engine.commit_capsule("assessed-once", _capsule(study, "assessed-once"))
+    assert engine.get_study_settlement_state("v2-study") == {"active_attempts": 1, "assessed_attempts": 0}
+    _mocks(direct_vm)
+    assessment = engine.evaluate_attempt("assessed-once")
+    assert assessment["verdict"] == "REPLICATED"
+    assert engine.get_study_settlement_state("v2-study") == {"active_attempts": 0, "assessed_attempts": 1}
+    with direct_vm.expect_revert("capsule must be committed before evaluation"):
+        engine.evaluate_attempt("assessed-once")
+    assert engine.get_study_settlement_state("v2-study") == {"active_attempts": 0, "assessed_attempts": 1}
 
 
 def test_settlement_counter_underflow_is_rejected(direct_vm, direct_deploy, direct_alice):
