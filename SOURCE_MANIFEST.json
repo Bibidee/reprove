@@ -21,7 +21,15 @@
     "genlayer-py": "v0.18",
     "genlayer-test": "v0.29"
   },
-  "deploymentStatus": "V2 audit corrections committed locally; fresh Studionet deployment and lifecycle pending",
+  "deploymentStatus": "V2_DEPLOYED_AND_LIFECYCLE_VERIFIED",
+  "auditedSourceCommit": "b47515c5fcf5146c64f75e300fc23f7d69daa85b",
+  "canonicalLifecycle": {
+    "studyKey": "reprove-v2-final-20261006212039",
+    "attemptKey": "reprove-v2-final-attempt-20261006212039",
+    "recordKey": "reprove-v2-final-20261006212039:reprove-v2-final-attempt-20261006212039",
+    "settlement": "0 active / 1 assessed / 1 finalized",
+    "verdict": "REPLICATED"
+  },
   "frontendIdentity": {
     "metaphor": "research journal / replication atlas / protocol paper / notebook / archive",
     "palette": [

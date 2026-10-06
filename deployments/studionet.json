@@ -4,37 +4,75 @@
   "chainId": 61999,
   "rpc": "https://studio.genlayer.com/api",
   "explorer": "https://explorer-studio.genlayer.com",
-  "deploymentStatus": "HISTORICAL_PRE_AUDIT_CORRECTIONS",
-  "freshCorrectedDeploymentRequired": true,
-  "deployedAt": "2026-10-06T15:02:02.830Z",
-  "frontend": {
-    "productionUrl": "https://reprove.vercel.app",
-    "deploymentUrl": "https://reprove-62054yb9d-bibidees-projects.vercel.app",
-    "deploymentId": "dpl_5DF3ynqSnvC3A1bXGhejiYmy8h9x",
-    "status": "READY_HISTORICAL"
-  },
-  "health": {
-    "verificationScope": "historical deployment; not proof of corrected audit branch",
-    "registryStats": {"studies": 0, "open": 0, "closed": 0},
-    "enginePoolBindingVerified": true,
-    "poolRegistryBindingVerified": true,
-    "poolEngineBindingVerified": true,
-    "claimableAddressReadVerified": true,
-    "routes": ["/", "/lab", "/claim/[studyKey]", "/attempt/[attemptKey]", "/archive/[recordKey]"]
-  },
+  "deploymentStatus": "V2_DEPLOYED_AND_LIFECYCLE_VERIFIED",
+  "sourceCommit": "b47515c5fcf5146c64f75e300fc23f7d69daa85b",
+  "deployedAt": "2026-10-06T18:45:48.244Z",
   "contracts": {
     "studyRegistry": {
-      "address": "0xa677A33B5E9683e9d65a3052c02Df40F1A62Aab8",
-      "deployTx": "0x3282de7cb5e8a2001bcd5da78e3ba0324ca5b40a6633d694e7fc8212907957b1"
+      "address": "0x951c60F2f7F61265734afb6d6Bd14790F1641110",
+      "deployTx": "0x208b6df981a1aa853db9c502ad0a01b7aaddfda2211071e27ee792bf3e76df27"
     },
     "replicationEngine": {
-      "address": "0x251793B351F1678BA620906EeAc2f7841D3a089e",
-      "deployTx": "0xa33fd847543e0469b878b5f7a1da82cd448a27d555067b40e244335e8fd62221",
-      "configurePoolTx": "0xdcfa4ec987085a233eff1908746503c55b191aa7457ea488ab61b1bef9ded367"
+      "address": "0xC5105F140a8c6c22fC17f255D7A3C8359DF3AEe4",
+      "deployTx": "0xce25429dd36ac96c24f9bfcbf98b95f9035d6310b4ec922b8fa886d1907fb3a3",
+      "configurePoolTx": "0x5be901423a92cd2bbd1afcb63fee42bc201ea5add6ac1ee190c3abaf37ff5487"
     },
     "researchPool": {
-      "address": "0x5729da9e5D20ad57A8FC750E77eEC879f4610aB7",
-      "deployTx": "0x5dad4b08920b283c2893655a6aad0f372d45b8ad61bf575d71dbdc4de2c033a7"
+      "address": "0x8B7c19f8876ABD24CCb176359F357377C5438b6F",
+      "deployTx": "0xa3c236339443b0841e91476ff7c69bc2759d608a720f2955831d4e4f1bdaeabe"
     }
+  },
+  "bindingVerification": {
+    "engineRegistryAddress": "0x951c60F2f7F61265734afb6d6Bd14790F1641110",
+    "enginePoolAddress": "0x8B7c19f8876ABD24CCb176359F357377C5438b6F",
+    "poolRegistryAddress": "0x951c60F2f7F61265734afb6d6Bd14790F1641110",
+    "poolEngineAddress": "0xC5105F140a8c6c22fC17f255D7A3C8359DF3AEe4",
+    "configurePoolFinalized": true
+  },
+  "frontend": {
+    "productionUrl": "https://reprove.vercel.app",
+    "deploymentUrl": "https://reprove.vercel.app",
+    "deploymentId": "dpl_Gs2wTfWuD5gYzy7cwZ4QxcQgVoUg",
+    "status": "READY",
+    "routes": [
+      "/",
+      "/lab",
+      "/claim/[studyKey]",
+      "/attempt/[attemptKey]",
+      "/archive/[recordKey]"
+    ],
+    "contractAddressesUpdated": true
+  },
+  "canonicalLifecycle": {
+    "studyKey": "reprove-v2-final-20261006212039",
+    "attemptKey": "reprove-v2-final-attempt-20261006212039",
+    "recordKey": "reprove-v2-final-20261006212039:reprove-v2-final-attempt-20261006212039",
+    "registrationTx": "0x45c78a9fe756f37839bcba9b47d277fcdf36193b2599deaa6bf07e4223c4f2f6",
+    "fundingTx": "0xca7b77c04f92698310a3b4c282049b5186a97405bbef420586bc4e5a4a008eaf",
+    "beginAttemptTx": "0x42d5d0531c6f9ca031e4fb824c1402c4e3974a2c152ac8c157371416cd1c1d3d",
+    "capsuleTx": "0x2b9d0f64241f06fbd6c71df31b9d499ac3ae0e81e4981856e1117991b165227d",
+    "evaluationTx": "0x2f6cd29903f0b660f34cc9f5b7294bf5779378d4e437f04a5150c11243c9f377",
+    "researchPoolChildTx": "0x195cfa750db8d191abb55e95dd16243444010c7bd45a33587704b7f70c021f91",
+    "withdrawalTx": "0xef48cb626032b6ae5b4bceb25d2776f27d3c0e3fcc1f27f32215d2e2ab75de18",
+    "closeTx": "0xc0f5e98b70bac6d3e5f5a49227ed1dde92f4be0b0b21bd6143eb44a7a48fd782",
+    "reclaimTx": "0x6f620de9ae7605581f0efdaff88dc34d38b628150db5fc77db3b1bf6642fcea8",
+    "studyDigest": "6cc38e4bb71db0377dcae3af741300254e0034e5232afb2b0687148f3d735756",
+    "capsuleDigest": "d5b0adc7679ce24a7278244711210e37058c18d5eb82123130a6aa8d37a53d53",
+    "assessmentDigest": "37bd7f63808d45eba28d81ebba13ad1fcbde70eff5a2fe04815b5ba632bf0235",
+    "verdict": "REPLICATED",
+    "settlement": {
+      "activeAttempts": 0,
+      "assessedAttempts": 1,
+      "finalizedRecords": 1,
+      "availableWeiAfterReclaim": 0,
+      "researcherClaimableAfterWithdrawal": 0
+    },
+    "publicArchiveUrl": "https://reprove.vercel.app/archive/reprove-v2-final-20261006212039%3Areprove-v2-final-attempt-20261006212039"
+  },
+  "historicalPreAuditDeployment": {
+    "status": "HISTORICAL_PRE_AUDIT_CORRECTIONS",
+    "studyRegistry": "0xa677A33B5E9683e9d65a3052c02Df40F1A62Aab8",
+    "replicationEngine": "0x251793B351F1678BA620906EeAc2f7841D3a089e",
+    "researchPool": "0x5729da9e5D20ad57A8FC750E77eEC879f4610aB7"
   }
 }
